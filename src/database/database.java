@@ -9,7 +9,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import database.poleInfo;
 
 public class database {
 	static final String driver = "com.mysql.cj.jdbc.Driver";
@@ -49,7 +48,9 @@ public class database {
 
 	public List<poleInfo> getInfo() throws SQLException {
 		List<poleInfo> result = new ArrayList<poleInfo>();
-		String operation = "select * from javaPoles";
+		String operation = "create table if not exists javaPoles (No int(8) unsigned primary key auto_increment, id varchar(32) not null, name varchar(128) not null, max_height double(8,2) not null, min_height double(8,2) not null, current_height double(8,2) not null)";
+		stmt.execute(operation);
+		operation = "select * from javaPoles";
 		ResultSet rs = stmt.executeQuery(operation);
 		while (rs.next()) {
 			poleInfo newinfo = new poleInfo();
@@ -62,5 +63,9 @@ public class database {
 			result.add(newinfo);
 		}
 		return result;
+	}
+
+	void SaveInfo(List<poleInfo> info) {
+
 	}
 }

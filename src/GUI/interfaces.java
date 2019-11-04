@@ -1,16 +1,29 @@
 package GUI;
 
-import java.awt.BorderLayout;
+import java.util.List;
+
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import GUI.poleGrid;
+import database.poleInfo;
 
-public class interfaces extends JScrollPane {
+public class interfaces extends JFrame {
 
     /**
      *
      */
     private static final long serialVersionUID = 1L;
+
+    public JScrollPane jsp = new JScrollPane();
+    public JPanel jp = new JPanel();
+
+    public interfaces(List<poleInfo> infoList) {
+        for (poleInfo i : infoList) {
+            jp.add(new poleGrid(i));
+        }
+        this.setContentPane(jp);
+        pack();
+    }
 
 }
