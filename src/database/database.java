@@ -53,7 +53,8 @@ public class database {
 		ResultSet rs = stmt.executeQuery(operation);
 		while (rs.next()) {
 			poleInfo newinfo = new poleInfo();
-			newinfo.id = rs.getInt("id");
+			newinfo.No = rs.getInt("No");
+			newinfo.id = rs.getString("id");
 			newinfo.name = rs.getString("name");
 			newinfo.max_height = rs.getDouble("max_height");
 			newinfo.min_height = rs.getDouble("min_height");
