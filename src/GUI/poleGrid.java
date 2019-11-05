@@ -18,8 +18,6 @@ public class poleGrid extends JPanel {
      */
     private static final long serialVersionUID = 1L;
 
-    private int No = 0;
-
     public JTextField id = null, name = null, max = null, min = null, current = null;
     public JSlider slider = null;
     public JButton deleteButton = null;

@@ -1,11 +1,8 @@
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JFrame;
-
-import com.mysql.cj.jdbc.exceptions.SQLError;
 
 import GUI.interfaces;
 import database.database;

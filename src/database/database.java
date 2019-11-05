@@ -43,7 +43,6 @@ public class database {
 		conn.close();
 		stmt.close();
 		System.out.println("Connection closed.");
-		super.finalize();
 	}
 
 	public List<poleInfo> getInfo() throws SQLException {
