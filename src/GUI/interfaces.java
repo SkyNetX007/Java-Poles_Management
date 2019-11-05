@@ -1,23 +1,22 @@
 package GUI;
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.Dimension;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-import database.poleInfo;
+import database.*;
 
 public class interfaces extends JFrame {
 
@@ -26,18 +25,19 @@ public class interfaces extends JFrame {
      */
     private static final long serialVersionUID = 1L;
 
-    private boolean contentChange = false;
-    private boolean filterChange = false;
-    private boolean err = false;
+    public boolean contentChange = false;
+    public boolean filterChange = false;
+    public boolean err = false;
+    public boolean save = false;
 
     private String filter = "";
 
     public JScrollPane jsp = null;
     public JPanel jp = new JPanel();
     public JTextField filterBox = new JTextField();
-    public JButton addButton = new JButton("ADD NEW POLE, ERASE NAME TO DELETE");
+    public JButton addButton = new JButton("ADD NEW POLE");
 
-    List<poleInfo> contentList = null;
+    public List<poleInfo> contentList = null;
     List<poleInfo> filterList = null;
 
     List<poleGrid> gridList = new ArrayList<poleGrid>();
@@ -46,6 +46,8 @@ public class interfaces extends JFrame {
         this.setLayout(new BorderLayout());
         contentList = new ArrayList<poleInfo>(infoList);
         filterList = infoList;
+        jp.setLayout(new FlowLayout());
+        jp.setPreferredSize(new Dimension(800, 400));
         for (poleInfo i : contentList) {
             poleGrid p = new poleGrid(i);
             p.deleteButton.addActionListener(new ActionListener() {
@@ -56,10 +58,13 @@ public class interfaces extends JFrame {
                     int i = 1;
                     Iterator<poleInfo> cit = contentList.iterator(), fit = filterList.iterator();
                     while (cit.hasNext()) {
+                        System.out.println(i);
                         cit.next().No = i;
                         fit.next().No = i;
                         i++;
                     }
+                    gridList.remove(p);
+                    jp.remove(p);
                 }
             });
             gridList.add(p);
@@ -80,14 +85,36 @@ public class interfaces extends JFrame {
                 pi.name = new String("NEW_POLE");
                 contentList.add(pi);
                 filterList.add(pi);
+                poleGrid p = new poleGrid(pi);
+                p.deleteButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        contentList.remove(pi);
+                        filterList.remove(pi);
+                        int i = 1;
+                        Iterator<poleInfo> cit = contentList.iterator(), fit = filterList.iterator();
+                        while (cit.hasNext()) {
+                            cit.next().No = i;
+                            fit.next().No = i;
+                            i++;
+                        }
+                        gridList.remove(p);
+                        jp.remove(p);
+                        contentChange = true;
+                    }
+                });
+                jp.add(p);
+                gridList.add(p);
+                contentChange = true;
             }
         });
-
+        jp.setPreferredSize(new Dimension(800, 30 + 150 * ((filterList.size() + 1) / 2)));
+        setPreferredSize(new Dimension(800, 400));
         pack();
     }
 
     public void getNewGrids() {
-        if (contentChange | filterChange) {
+        if (filterChange) {
             for (poleGrid i : gridList) {
                 jp.remove(i);
             }
@@ -106,19 +133,25 @@ public class interfaces extends JFrame {
                             fit.next().No = i;
                             i++;
                         }
+                        gridList.remove(p);
+                        jp.remove(p);
+                        contentChange = true;
                     }
                 });
                 gridList.add(p);
                 jp.add(p);
             }
-            jp.revalidate();
-            jp.repaint();
+            jp.updateUI();
+            jp.setPreferredSize(new Dimension(800, 30 + 150 * ((filterList.size() + 1) / 2)));
+        }
+        if (contentChange) {
+            jp.setPreferredSize(new Dimension(800, 30 + 150 * ((filterList.size() + 1) / 2)));
+            jp.updateUI();
         }
     }
 
     public void update() {
         filterChange = false;
-        contentChange = false;
         if (!filterBox.getText().equals(filter)) {
             filter = filterBox.getText();
             filterChange = true;
@@ -138,11 +171,46 @@ public class interfaces extends JFrame {
                 double gmin = Double.valueOf(g.min.getText());
                 double gmax = Double.valueOf(g.max.getText());
                 double gcur = Double.valueOf(g.current.getText());
-
-                if (!p.id.equals(gid) | !p.name.equals(gname) | p.current_height != gcur | p.min_height != gmin
-                        | p.max_height != gmax) {
+                // 检测输入错误
+                if (gmin >= gmax | gmin > gcur | gcur > gmax | gid.length() == 0 | gname.length() == 0) {
+                    if (!err) {
+                        JOptionPane.showMessageDialog(this, "Error detected, auto-saving will be stopped.");
+                    }
+                    err = true;
+                    return;
+                }
+                err = false;
+                // 检测输入变化
+                if (!p.name.equals(gname)) {
+                    p.name = new String(gname);
                     contentChange = true;
-                    break;
+                }
+                if (!p.id.equals(gid)) {
+                    p.id = new String(gid);
+                    contentChange = true;
+                }
+                if (gmin != p.min_height) {
+                    p.min_height = gmin;
+                    contentChange = true;
+                }
+                if (gcur != p.current_height) {
+                    p.current_height = gcur;
+                    contentChange = true;
+                }
+                if (gmax != p.max_height) {
+                    p.max_height = gmax;
+                    contentChange = true;
+                }
+                if (g.percentage != g.slider.getValue()) {
+                    g.percentage = g.slider.getValue();
+                    gcur = p.current_height = g.percentage * (p.max_height - p.min_height) / 100 + p.min_height;
+                    g.current.setText(String.valueOf(p.current_height));
+                    contentChange = true;
+                }
+
+                if (contentChange) {
+                    g.percentage = (int) ((gcur - gmin) / (gmax - gmin) * 100);
+                    g.slider.setValue(g.percentage);
                 }
             }
         }
@@ -160,6 +228,7 @@ public class interfaces extends JFrame {
             }
         }
         System.out.println(contentChange + ", " + filterChange);
+        save = !save;
     }
 
 }

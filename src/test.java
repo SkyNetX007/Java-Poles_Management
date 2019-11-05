@@ -1,8 +1,11 @@
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JFrame;
+
+import com.mysql.cj.jdbc.exceptions.SQLError;
 
 import GUI.interfaces;
 import database.database;
@@ -24,8 +27,17 @@ public class test {
             Timer t = new Timer();
             t.schedule(new TimerTask() {
                 public void run() {
-                    frame.update();
-                    frame.getNewGrids();
+                    try {
+                        frame.update();
+                        frame.getNewGrids();
+
+                        if (!frame.err & frame.contentChange & frame.save) {
+                            db.SaveInfo(frame.contentList);
+                            frame.contentChange = false;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }, 100, 1000);
 

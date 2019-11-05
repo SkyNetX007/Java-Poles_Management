@@ -12,7 +12,7 @@ import java.util.List;
 
 public class database {
 	static final String driver = "com.mysql.cj.jdbc.Driver";
-	static final String db = "jdbc:mysql://149.28.49.148/poles";
+	static final String db = "jdbc:mysql://localhost/poles";
 	static final String user = "root";
 	static final String passwd = "";
 
@@ -65,13 +65,13 @@ public class database {
 		return result;
 	}
 
-	void SaveInfo(List<poleInfo> info) throws SQLException {
+	public void SaveInfo(List<poleInfo> info) throws SQLException {
 		stmt.execute("drop table javaPoles");
 		stmt.execute(
 				"create table if not exists javaPoles (No int(8) unsigned primary key auto_increment, id varchar(32) not null, name varchar(128) not null, max_height double(8,2) not null, min_height double(8,2) not null, current_height double(8,2) not null)");
 		for (poleInfo i : info) {
-			stmt.execute("insert into javaPoles values (" + i.No + "," + i.id + "," + i.name + "," + i.max_height + ","
-					+ i.min_height + "," + i.current_height + ")");
+			stmt.execute("insert into javaPoles values (" + i.No + ",\"" + i.id + "\",\"" + i.name + "\","
+					+ i.max_height + "," + i.min_height + "," + i.current_height + ")");
 		}
 	}
 }

@@ -24,6 +24,8 @@ public class poleGrid extends JPanel {
     public JSlider slider = null;
     public JButton deleteButton = null;
 
+    public int percentage = 0;
+
     public poleGrid(poleInfo info) {
         No = info.No;
 
@@ -38,7 +40,7 @@ public class poleGrid extends JPanel {
         current.setPreferredSize(new Dimension(80, 30));
         min = new JTextField(String.valueOf(info.min_height));
         min.setPreferredSize(new Dimension(80, 30));
-        int percentage = (int) ((info.current_height - info.min_height) / (info.max_height - info.min_height) * 100);
+        percentage = (int) ((info.current_height - info.min_height) / (info.max_height - info.min_height) * 100);
         slider = new JSlider(0, 100, percentage);
 
         JPanel id_name = new JPanel();
