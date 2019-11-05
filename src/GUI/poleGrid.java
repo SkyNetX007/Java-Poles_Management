@@ -4,11 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.text.Document;
 
 import database.poleInfo;
 
@@ -22,6 +22,7 @@ public class poleGrid extends JPanel {
 
     public JTextField id = null, name = null, max = null, min = null, current = null;
     public JSlider slider = null;
+    public JButton deleteButton = null;
 
     public poleGrid(poleInfo info) {
         No = info.No;
@@ -62,11 +63,15 @@ public class poleGrid extends JPanel {
         min_max_current.add(current);
         min_max_current.add(max);
 
+        deleteButton = new JButton("X");
+        deleteButton.setPreferredSize(new Dimension(50, 30));
+
         add(id_name, "North");
         add(min_max_current, "Center");
         add(slider, "South");
+        add(deleteButton, "East");
 
-        setPreferredSize(new Dimension(300, 150));
+        setPreferredSize(new Dimension(320, 150));
 
         setVisible(true);
     }
