@@ -12,7 +12,7 @@ import java.util.List;
 
 public class database {
 	static final String driver = "com.mysql.cj.jdbc.Driver";
-	static final String db = "jdbc:mysql://localhost/poles";
+	static final String db = "jdbc:mysql://149.28.49.148/poles";
 	static final String user = "root";
 	static final String passwd = "";
 

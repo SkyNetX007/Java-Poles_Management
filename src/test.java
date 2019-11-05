@@ -1,4 +1,6 @@
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JFrame;
 
@@ -18,6 +20,14 @@ public class test {
 
             frame.setTitle("Java-Poles_Management");
             frame.setVisible(true);
+
+            Timer t = new Timer();
+            t.schedule(new TimerTask() {
+                public void run() {
+                    frame.update();
+                    frame.getNewGrids();
+                }
+            }, 100, 1000);
 
         } catch (Exception e) {
             e.printStackTrace();

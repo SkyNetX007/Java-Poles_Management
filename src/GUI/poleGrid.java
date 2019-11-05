@@ -68,8 +68,6 @@ public class poleGrid extends JPanel {
 
         setPreferredSize(new Dimension(300, 150));
 
-        Document doc = name.getDocument();
-
         setVisible(true);
     }
 }
