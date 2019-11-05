@@ -25,8 +25,6 @@ public class poleGrid extends JPanel {
     public int percentage = 0;
 
     public poleGrid(poleInfo info) {
-        No = info.No;
-
         setLayout(new BorderLayout(5, 5));
         id = new JTextField(info.id);
         id.setPreferredSize(new Dimension(240, 30));
