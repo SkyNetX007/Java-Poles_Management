@@ -58,13 +58,13 @@ public class interfaces extends JFrame {
                     int i = 1;
                     Iterator<poleInfo> cit = contentList.iterator(), fit = filterList.iterator();
                     while (cit.hasNext()) {
-                        System.out.println(i);
                         cit.next().No = i;
                         fit.next().No = i;
                         i++;
                     }
                     gridList.remove(p);
                     jp.remove(p);
+                    contentChange = true;
                 }
             });
             gridList.add(p);
@@ -179,7 +179,6 @@ public class interfaces extends JFrame {
                     err = true;
                     return;
                 }
-                err = false;
                 // 检测输入变化
                 if (!p.name.equals(gname)) {
                     p.name = new String(gname);
@@ -213,6 +212,7 @@ public class interfaces extends JFrame {
                     g.slider.setValue(g.percentage);
                 }
             }
+            err = false;
         }
 
         // 重新填充过滤结果
