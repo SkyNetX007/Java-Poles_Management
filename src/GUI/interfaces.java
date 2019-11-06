@@ -168,11 +168,23 @@ public class interfaces extends JFrame {
                 poleGrid g = gridit.next();
                 String gid = g.id.getText();
                 String gname = g.name.getText();
-                double gmin = Double.valueOf(g.min.getText());
-                double gmax = Double.valueOf(g.max.getText());
-                double gcur = Double.valueOf(g.current.getText());
+                double gmin = 0;
+                double gmax = 0;
+                double gcur = 0;
+                try {
+                    gmin = Double.valueOf(g.min.getText());
+                    gmax = Double.valueOf(g.max.getText());
+                    gcur = Double.valueOf(g.current.getText());
+                } catch (NumberFormatException e) {
+                    if (!err) {
+                        JOptionPane.showMessageDialog(this, "Error detected, auto-saving will be stopped.");
+                    }
+                    err = true;
+                    return;
+                }
                 // 检测输入错误
-                if (gmin >= gmax | gmin > gcur | gcur > gmax | gid.length() == 0 | gname.length() == 0) {
+                if (g.min.getText().length() == 0 | g.max.getText().length() == 0 | g.current.getText().length() == 0
+                        | gmin >= gmax | gmin > gcur | gcur > gmax | gid.length() == 0 | gname.length() == 0) {
                     if (!err) {
                         JOptionPane.showMessageDialog(this, "Error detected, auto-saving will be stopped.");
                     }
