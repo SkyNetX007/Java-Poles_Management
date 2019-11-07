@@ -1,8 +1,8 @@
 package GUI;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-import database.*;
+import database.poleInfo;
 
 public class interfaces extends JFrame {
 
@@ -28,6 +28,7 @@ public class interfaces extends JFrame {
     public boolean contentChange = false;
     public boolean filterChange = false;
     public boolean err = false;
+    public boolean facterr = false;
     public boolean save = false;
 
     private String filter = "";
@@ -108,7 +109,7 @@ public class interfaces extends JFrame {
                 contentChange = true;
             }
         });
-        jp.setPreferredSize(new Dimension(800, 30 + 150 * ((filterList.size() + 1) / 2)));
+        jp.setPreferredSize(new Dimension(800, 30 + 200 * ((filterList.size() + 1) / 2)));
         setPreferredSize(new Dimension(800, 400));
         pack();
     }
@@ -142,15 +143,15 @@ public class interfaces extends JFrame {
                 jp.add(p);
             }
             jp.updateUI();
-            jp.setPreferredSize(new Dimension(800, 30 + 150 * ((filterList.size() + 1) / 2)));
+            jp.setPreferredSize(new Dimension(800, 30 + 200 * ((filterList.size() + 1) / 2)));
         }
         if (contentChange) {
-            jp.setPreferredSize(new Dimension(800, 30 + 150 * ((filterList.size() + 1) / 2)));
+            jp.setPreferredSize(new Dimension(800, 30 + 200 * ((filterList.size() + 1) / 2)));
             jp.updateUI();
         }
     }
 
-    public void update() {
+    public void update(List<poleInfo> lst) {
         filterChange = false;
         if (!filterBox.getText().equals(filter)) {
             filter = filterBox.getText();
@@ -163,9 +164,14 @@ public class interfaces extends JFrame {
         } else {
             Iterator<poleInfo> infoit = filterList.iterator();
             Iterator<poleGrid> gridit = gridList.iterator();
+            Iterator<poleInfo> factit = lst.iterator();
+            boolean facter = false;
             while (infoit.hasNext()) {
                 poleInfo p = infoit.next();
                 poleGrid g = gridit.next();
+                poleInfo f = new poleInfo();
+                if (factit.hasNext())
+                    f = factit.next();
                 String gid = g.id.getText();
                 String gname = g.name.getText();
                 double gmin = 0;
@@ -219,11 +225,39 @@ public class interfaces extends JFrame {
                     contentChange = true;
                 }
 
+                double gfact = f.fact_height;
+                if (gfact < gmin | gfact > gmax) {
+                    if (!facterr) {
+                        JOptionPane.showMessageDialog(this,
+                                "Error occurred on pole ID:" + f.id + "\nCurrent height = " + f.fact_height);
+
+                    }
+                    facterr = true;
+                    facter = true;
+                    g.fact_slider.setValue(100);
+                } else {
+                    g.fact_slider.setValue((int) ((gfact - gmin) / (gmax - gmin) * 100));
+
+                }
+
+                String statuss;
+                if (gfact == gcur)
+                    statuss = "Ready";
+                else if (gfact > gcur)
+                    statuss = "Going Down";
+                else
+                    statuss = "Going Up";
+                g.status.setText(statuss);
+
+                p.fact_height = f.fact_height;
+
                 if (contentChange) {
                     g.percentage = (int) ((gcur - gmin) / (gmax - gmin) * 100);
                     g.slider.setValue(g.percentage);
                 }
             }
+            if (!facter)
+                facterr = false;
             err = false;
         }
 

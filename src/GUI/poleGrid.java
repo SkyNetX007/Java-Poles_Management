@@ -19,10 +19,11 @@ public class poleGrid extends JPanel {
     private static final long serialVersionUID = 1L;
 
     public JTextField id = null, name = null, max = null, min = null, current = null;
-    public JSlider slider = null;
+    public JSlider slider = null, fact_slider = null;
     public JButton deleteButton = null;
+    public JTextArea status = null;
 
-    public int percentage = 0;
+    public int percentage = 0, fact_percentage = 0;
 
     public poleGrid(poleInfo info) {
         setLayout(new BorderLayout(5, 5));
@@ -36,8 +37,21 @@ public class poleGrid extends JPanel {
         current.setPreferredSize(new Dimension(80, 30));
         min = new JTextField(String.valueOf(info.min_height));
         min.setPreferredSize(new Dimension(80, 30));
+        String statuss;
+        if (info.current_height == info.fact_height)
+            statuss = "Ready";
+        else if (info.current_height > info.fact_height)
+            statuss = "Going Up";
+        else
+            statuss = "Going Down";
+        status = new JTextArea(statuss);
         percentage = (int) ((info.current_height - info.min_height) / (info.max_height - info.min_height) * 100);
+        fact_percentage = (int) ((info.fact_height - info.min_height) / (info.max_height - info.min_height) * 100);
         slider = new JSlider(0, 100, percentage);
+        if (fact_percentage < 100)
+            fact_slider = new JSlider(0, 100, fact_percentage);
+        else
+            fact_slider = new JSlider(0, 100, 100);
 
         JPanel id_name = new JPanel();
         id_name.setPreferredSize(new Dimension(300, 80));
@@ -60,16 +74,22 @@ public class poleGrid extends JPanel {
         min_max_current.add(min);
         min_max_current.add(current);
         min_max_current.add(max);
+        min_max_current.add(status);
+
+        JPanel sliders = new JPanel();
+        sliders.setPreferredSize(new Dimension(300, 50));
+        sliders.add(slider);
+        sliders.add(fact_slider);
 
         deleteButton = new JButton("X");
         deleteButton.setPreferredSize(new Dimension(50, 30));
 
         add(id_name, "North");
         add(min_max_current, "Center");
-        add(slider, "South");
+        add(sliders, "South");
         add(deleteButton, "East");
 
-        setPreferredSize(new Dimension(320, 150));
+        setPreferredSize(new Dimension(320, 200));
 
         setVisible(true);
     }

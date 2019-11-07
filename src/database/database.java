@@ -47,7 +47,7 @@ public class database {
 
 	public List<poleInfo> getInfo() throws SQLException {
 		List<poleInfo> result = new ArrayList<poleInfo>();
-		String operation = "create table if not exists javaPoles (No int(8) unsigned primary key auto_increment, id varchar(32) not null, name varchar(128) not null, max_height double(8,2) not null, min_height double(8,2) not null, current_height double(8,2) not null)";
+		String operation = "create table if not exists javaPoles (No int(8) unsigned primary key auto_increment, id varchar(32) not null, name varchar(128) not null, max_height double(8,2) not null, min_height double(8,2) not null, current_height double(8,2) not null,fact_height double(8,2) default 0)";
 		stmt.execute(operation);
 		operation = "select * from javaPoles";
 		ResultSet rs = stmt.executeQuery(operation);
@@ -59,6 +59,7 @@ public class database {
 			newinfo.max_height = rs.getDouble("max_height");
 			newinfo.min_height = rs.getDouble("min_height");
 			newinfo.current_height = rs.getDouble("current_height");
+			newinfo.fact_height = rs.getDouble("fact_height");
 			result.add(newinfo);
 		}
 		return result;
@@ -67,10 +68,11 @@ public class database {
 	public void SaveInfo(List<poleInfo> info) throws SQLException {
 		stmt.execute("drop table javaPoles");
 		stmt.execute(
-				"create table if not exists javaPoles (No int(8) unsigned primary key auto_increment, id varchar(32) not null, name varchar(128) not null, max_height double(8,2) not null, min_height double(8,2) not null, current_height double(8,2) not null)");
+				"create table if not exists javaPoles (No int(8) unsigned primary key auto_increment, id varchar(32) not null, name varchar(128) not null, max_height double(8,2) not null, min_height double(8,2) not null, current_height double(8,2) not null,fact_height double(8,2) default 0)");
 		for (poleInfo i : info) {
-			stmt.execute("insert into javaPoles values (" + i.No + ",\"" + i.id + "\",\"" + i.name + "\","
-					+ i.max_height + "," + i.min_height + "," + i.current_height + ")");
+			stmt.execute("insert into javaPoles (No,id,name,max_height,min_height,current_height,fact_height)  values ("
+					+ i.No + ",\"" + i.id + "\",\"" + i.name + "\"," + i.max_height + "," + i.min_height + ","
+					+ i.current_height + "," + i.fact_height + ")");
 		}
 	}
 }

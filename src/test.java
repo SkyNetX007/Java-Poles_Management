@@ -25,7 +25,8 @@ public class test {
             t.schedule(new TimerTask() {
                 public void run() {
                     try {
-                        frame.update();
+                        List<poleInfo> pinfos = db.getInfo();
+                        frame.update(pinfos);
                         frame.getNewGrids();
 
                         if (!frame.err & frame.contentChange & frame.save) {
